@@ -1,0 +1,61 @@
+nextflow_pipeline { 
+    name "Test Workflow main.nf" 
+    script "../main.nf" 
+    profile "test"
+
+    test("Classify cat and dog, keep cat") {
+
+        when { 
+            params { 
+                outdir = "$outputDir" 
+            } 
+        }
+
+        then {
+            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true)
+            assert workflow.success 
+            assert snapshot(
+                workflow.trace.succeeded().size(),
+                stable_name
+            ).match() 
+        } 
+    } 
+
+    test("Classify cat and dog, keep dog") {
+
+        when { 
+            params { 
+                outdir = "$outputDir"
+                keep = 'dog'
+            } 
+        }
+
+        then {
+            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true)
+            assert workflow.success 
+            assert snapshot(
+                workflow.trace.succeeded().size(),
+                stable_name
+            ).match() 
+        } 
+    } 
+
+    test("Classify cat and dog, keep both") {
+
+        when { 
+            params { 
+                outdir = "$outputDir"
+                keep = 'dog,cat'
+            } 
+        }
+
+        then {
+            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true)
+            assert workflow.success 
+            assert snapshot(
+                workflow.trace.succeeded().size(),
+                stable_name
+            ).match() 
+        } 
+    } 
+}

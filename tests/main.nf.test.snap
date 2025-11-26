@@ -1,0 +1,41 @@
+{
+    "Classify cat and dog, keep cat": {
+        "content": [
+            13,
+            [
+                "collage_all.png"
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.0"
+        },
+        "timestamp": "2025-11-26T17:34:28.819494598"
+    },
+    "Classify cat and dog, keep dog": {
+        "content": [
+            15,
+            [
+                "collage_all.png"
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.0"
+        },
+        "timestamp": "2025-11-26T17:35:15.185837263"
+    },
+    "Classify cat and dog, keep both": {
+        "content": [
+            19,
+            [
+                "collage_all.png"
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.0"
+        },
+        "timestamp": "2025-11-26T17:36:00.759212591"
+    }
+}
