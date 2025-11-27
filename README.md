@@ -35,8 +35,10 @@ Your mission should you choose to accept is going to be to:
 
 ### Mirror
 
-This repository is mirrored on GitLab at [gitlab - ANF Workflow et Reproductibilité](https://gitlab.com/anf-workflow-et-reproductibilite)
-This repository is mirrored on GitHub at [github - maxulysse](https://github.com/maxulysse/anf)
+This repository is mirrored on both GitHub and GitLab:
+
+- [github - maxulysse](https://github.com/maxulysse/anf)
+- [gitlab - ANF Workflow et Reproductibilité](https://gitlab.com/anf-workflow-et-reproductibilite)
 
 ## Resources
 
