@@ -9,27 +9,33 @@ permissions:
 
 jobs:
   release:
-    permissions:
-      contents: write # to be able to publish a GitHub release
-      issues: write # to be able to comment on released issues
-      pull-requests: write # to be able to comment on released pull requests
-      id-token: write # to enable use of OIDC for npm provenance
-
-    name: release
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write # Needed to publish tags & update release notes
+      issues: write # Allows semantic-release to open issues
+      pull-requests: write # Allows semantic-release to manage PR comments
     steps:
-      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
-      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+      - name: Checkout code
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
         with:
-          cache: npm
-          node-version: lts/*
-      - run: npm clean-install
-      - run: npm install --global corepack@latest
-      - run: corepack npm audit signatures
-      # pinned version updated automatically by Renovate.
-      # details at https://semantic-release.gitbook.io/semantic-release/usage/installation#global-installation
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: npx semantic-release@25.0.1
+      - name: Setup Node.js
+        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run semantic-release
+        # semantic-release handles:
+        # - Determining next version
+        # - Publishing GitHub release
+        # - Creating git tags
+        # - Updating release notes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release --extends ./.releaserc.json
