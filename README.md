@@ -33,6 +33,11 @@ Your mission should you choose to accept is going to be to:
 
 ![nf-training-intro metro map](docs/assets/nf-training.png)
 
+### Mirror
+
+This repository is mirrored on GitLab at [gitlab - ANF Workflow et Reproductibilité](https://gitlab.com/anf-workflow-et-reproductibilite)
+This repository is mirrored on GitHub at [github - maxulysse](https://github.com/maxulysse/anf)
+
 ## Resources
 
 - [Seqera website](https://seqera.io/)
