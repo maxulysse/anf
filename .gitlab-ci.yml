@@ -1,0 +1,71 @@
+# -------------------------------------------------------------------
+# GitLab CI/CD Pipeline
+# This pipeline builds and publishes a Docker image, then performs a
+# semantic release. It is designed for projects using GitLab Container
+# Registry and semantic-release for automated versioning.
+#
+# Stages:
+#   1. build   – Builds and pushes the Docker image
+#   2. release – Runs semantic-release on the main branch
+#
+# Requirements:
+#   - CI_REGISTRY, CI_REGISTRY_USER, CI_REGISTRY_PASSWORD provided by GitLab
+#   - GL_TOKEN (or GITLAB_TOKEN) must be configured as a CI/CD variable
+#     with 'api' and 'write_repository' scopes for semantic-release
+# -------------------------------------------------------------------
+
+
+stages:
+  - build
+  - release
+
+variables:
+  # Docker image registry location
+  DOCKER_IMAGE_NAME: $CI_REGISTRY_IMAGE
+  # Use GL_TOKEN (or GITLAB_TOKEN) environment variable
+  # This should be set as a CI/CD variable in GitLab project settings
+  # with a Personal Access Token that has 'api' and 'write_repository' scopes
+  GL_TOKEN: $GL_TOKEN
+
+docker-build:
+  stage: build
+  image: docker:24
+  services:
+    - docker:24-dind  # Enable Docker-in-Docker for building images
+  before_script:
+    # Authenticate to GitLab Container Registry
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    # Build the Docker image with two tags:
+    # - branch/tag name ($CI_COMMIT_REF_SLUG)
+    # - 'latest' tag (only for main)
+    - |
+      docker build -t $DOCKER_IMAGE_NAME:$CI_COMMIT_REF_SLUG \
+                    -t $DOCKER_IMAGE_NAME:latest .
+    # Push with branch/tag name
+    - docker push $DOCKER_IMAGE_NAME:$CI_COMMIT_REF_SLUG
+    # Push latest tag (only for main branch)
+    - |
+      if [ "$CI_COMMIT_BRANCH" == "main" ]; then
+        docker push $DOCKER_IMAGE_NAME:latest
+      fi
+  rules:
+    # Run the build job for:
+    # - the main branch
+    # - any Git tag (release tags)
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_TAG
+
+release:  # Name of the job responsible for releasing
+  stage: release  # Assign this job to the "release" stage
+  image: node:20  # Use Node.js 20 Docker image for this job
+  before_script:
+    # Install dependencies needed for semantic-release
+    - npm ci
+  script:
+    # Run semantic-release to publish a new version, changelog, and git tag
+    - npm run semantic-release
+  rules:
+    # Only release on the main branch
+    - if: $CI_COMMIT_BRANCH == "main"
+
