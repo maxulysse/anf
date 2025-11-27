@@ -12,7 +12,7 @@ workflow {
 
     // Here we want to keep only some specific kind of animals
     ch_animal = Classify.out.branch { type, _pics ->
-        keep: params.keep.contains(type.trim())
+        keep: params.keep ? params.keep.contains(type.trim()) : true
         other: true
     }
 

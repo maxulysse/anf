@@ -8,6 +8,7 @@ nextflow_pipeline {
         when { 
             params { 
                 outdir = "$outputDir" 
+                keep = 'cat'
             } 
         }
 
@@ -45,7 +46,6 @@ nextflow_pipeline {
         when { 
             params { 
                 outdir = "$outputDir"
-                keep = 'dog,cat'
             } 
         }
 
